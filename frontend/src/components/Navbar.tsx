@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "./ThemeToggle";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -17,34 +16,37 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <nav className="sticky top-0 z-50 bg-black text-white shadow-md">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold tracking-tight">
+        <Link href="/" className="text-2xl font-bold tracking-tight text-white">
           ModelMinds
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              className={`${
-                pathname === link.path
-                  ? "text-blue-500 font-medium"
-                  : "text-gray-700 dark:text-gray-300"
-              } hover:text-blue-400 transition`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <ThemeToggle />
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.path;
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={`px-4 py-2 rounded-lg border border-white font-medium transition-all duration-300 
+                  ${
+                    isActive
+                      ? "text-orange-500"
+                      : "text-white hover:text-orange-400"
+                  }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-gray-700 dark:text-gray-300"
+          className="md:hidden text-white text-2xl"
           onClick={() => setIsOpen(!isOpen)}
         >
           ☰
@@ -53,22 +55,25 @@ export default function Navbar() {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="md:hidden px-6 pb-4 flex flex-col gap-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              className={`${
-                pathname === link.path
-                  ? "text-blue-500 font-medium"
-                  : "text-gray-700 dark:text-gray-300"
-              } hover:text-blue-400 transition`}
-              onClick={() => setIsOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <ThemeToggle />
+        <div className="md:hidden flex flex-col gap-3 bg-black px-6 pb-4">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.path;
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={`text-center px-4 py-2 rounded-lg border border-white font-medium transition-all duration-300 
+                  ${
+                    isActive
+                      ? "text-orange-500"
+                      : "text-white hover:text-orange-400"
+                  }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
       )}
     </nav>

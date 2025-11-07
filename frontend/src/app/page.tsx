@@ -1,13 +1,32 @@
+import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white dark:bg-gray-100 dark:text-black transition-all duration-500">
-      <h1 className="text-5xl font-bold text-blue-400 underline mb-4">
-        ModelMinds 🌍
-      </h1>
-      <p className="text-lg mb-6">Innovating AI for the next generation.</p>
-      <ThemeToggle />
+    <div className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src="/hero.png" // Place this image in /public folder
+        alt="Background"
+        fill
+        className="object-cover -z-10"
+        priority
+      />
+
+      {/* Dark overlay for better text visibility */}
+      <div className="absolute inset-0 bg-black/50 -z-10" />
+
+      {/* Foreground Content */}
+      <div className="text-center text-white px-4">
+        {/* <h1 className="text-5xl font-bold text-blue-400 underline mb-4 drop-shadow-lg">
+          ModelMinds
+        </h1> */}
+        <p className="text-3xl font-semibold mb-6 drop-shadow-md max-w-2xl mx-auto">
+          “Bringing architecture to life with photorealistic designs, interiors,
+          and cinematic walkthroughs.”
+        </p>
+        {/* <ThemeToggle /> */}
+      </div>
     </div>
   );
 }
