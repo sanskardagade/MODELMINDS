@@ -16,12 +16,23 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-black text-white shadow-md">
+    <nav className="sticky top-0 z-50 bg-[#848884] text-white shadow-md">
+
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold tracking-tight text-white">
-          ModelMinds
-        </Link>
+          <Link href="/" className="flex items-center gap-2">
+            <img
+              src="/logo.png"
+              alt="ModelMinds Logo"
+              className="h-10 w-20 object-contain"
+            />
+            <span className="text-white text-2xl font-bold tracking-tight flex items-center">
+              ModelMinds
+              <span className="text-[#f97316] text-5xl leading-none">.</span>
+            </span>
+          </Link>
+
+
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
@@ -31,11 +42,11 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 href={link.path}
-                className={`px-4 py-2 rounded-lg border border-white font-medium transition-all duration-300 
+                className={`px-4 py-2 rounded-lg border border-white font-medium transition-all duration-300
                   ${
                     isActive
-                      ? "text-orange-500"
-                      : "text-white hover:text-orange-400"
+                      ? "bg-orange-500 text-white border-orange-500"
+                      : "text-white hover:bg-orange-500 hover:text-white hover:border-orange-500"
                   }`}
               >
                 {link.name}
@@ -62,11 +73,11 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 href={link.path}
-                className={`text-center px-4 py-2 rounded-lg border border-white font-medium transition-all duration-300 
+                className={`text-center px-4 py-2 rounded-lg border border-white font-medium transition-all duration-300
                   ${
                     isActive
-                      ? "text-orange-500"
-                      : "text-white hover:text-orange-400"
+                      ? "bg-orange-500 text-white border-orange-500"
+                      : "text-white hover:bg-orange-500 hover:text-white hover:border-orange-500"
                   }`}
                 onClick={() => setIsOpen(false)}
               >
