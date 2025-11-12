@@ -12,7 +12,7 @@ export default function ContactPage() {
         transition={{ duration: 0.7 }}
         className="text-5xl md:text-6xl font-bold mb-10 text-center tracking-wide"
       >
-        Contact Our<span className="text-[#f97316]"> Team</span>
+        Contact Our<span className="text-[#FFBF00]"> Team</span>
       </motion.h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl w-full">
