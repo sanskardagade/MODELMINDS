@@ -1,0 +1,541 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+export default function ProjectManagement() {
+  const [projects, setProjects] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingProject, setEditingProject] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | "ongoing" | "completed">("all");
+  
+  // Create project form
+  const [newProject, setNewProject] = useState({
+    name: "",
+    description: "",
+    dealAmount: "",
+    userId: "",
+  });
+
+  // Edit project form
+  const [editForm, setEditForm] = useState({
+    progressPercent: 0,
+    dealAmount: 0,
+    receivedAmount: 0,
+    userId: "",
+  });
+
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetchProjects();
+    fetchClients();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/projects", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setProjects(data.data.projects || []);
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchClients = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/admin/clients", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setClients(data.data.clients || []);
+      }
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    }
+  };
+
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage("");
+
+    if (!newProject.name.trim()) {
+      setMessage("Project name is required");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          name: newProject.name.trim(),
+          description: newProject.description.trim() || null,
+          dealAmount: parseFloat(newProject.dealAmount) || 0,
+          userId: newProject.userId || null,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage("Project created successfully!");
+        setNewProject({
+          name: "",
+          description: "",
+          dealAmount: "",
+          userId: "",
+        });
+        setShowCreateForm(false);
+        fetchProjects();
+      } else {
+        setMessage(data.message || "Failed to create project");
+      }
+    } catch (error) {
+      setMessage("Network error. Please try again.");
+      console.error("Create project error:", error);
+    }
+  };
+
+  const handleStartEdit = (project: any) => {
+    setEditingProject(project.id);
+    setEditForm({
+      progressPercent: project.progressPercent,
+      dealAmount: project.dealAmount,
+      receivedAmount: project.receivedAmount,
+      userId: project.userId || "",
+    });
+  };
+
+  const handleUpdateProject = async (projectId: string) => {
+    setMessage("");
+    try {
+      // Update project details
+      const project = projects.find((p) => p.id === projectId);
+      if (!project) return;
+
+      // Update progress
+      if (editForm.progressPercent !== project.progressPercent) {
+        await fetch(
+          `http://localhost:5000/api/projects/${projectId}/progress`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              progressPercent: editForm.progressPercent,
+            }),
+          }
+        );
+      }
+
+      // Update amounts
+      if (
+        editForm.dealAmount !== project.dealAmount ||
+        editForm.receivedAmount !== project.receivedAmount
+      ) {
+        await fetch(`http://localhost:5000/api/projects/${projectId}/amounts`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            dealAmount: editForm.dealAmount,
+            receivedAmount: editForm.receivedAmount,
+          }),
+        });
+      }
+
+      // Update client assignment
+      if (editForm.userId !== project.userId) {
+        await fetch(
+          `http://localhost:5000/api/projects/${projectId}/assign-user`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              userId: editForm.userId || null,
+            }),
+          }
+        );
+      }
+
+      setMessage("Project updated successfully!");
+      setEditingProject(null);
+      fetchProjects();
+    } catch (error) {
+      setMessage("Failed to update project");
+      console.error("Update error:", error);
+    }
+  };
+
+  const filteredProjects = projects.filter((project) => {
+    if (filter === "ongoing") return project.progressPercent < 100;
+    if (filter === "completed") return project.progressPercent === 100;
+    return true;
+  });
+
+  if (loading) {
+    return <div className="text-center py-8 text-gray-400">Loading projects...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header with Create Button */}
+      <div className="flex justify-between items-center">
+        <div className="flex gap-4">
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded-md transition-colors ${
+              filter === "all"
+                ? "bg-gray-300 text-black"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
+          >
+            All Projects
+          </button>
+          <button
+            onClick={() => setFilter("ongoing")}
+            className={`px-4 py-2 rounded-md transition-colors ${
+              filter === "ongoing"
+                ? "bg-gray-300 text-black"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
+          >
+            Ongoing
+          </button>
+          <button
+            onClick={() => setFilter("completed")}
+            className={`px-4 py-2 rounded-md transition-colors ${
+              filter === "completed"
+                ? "bg-gray-300 text-black"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
+          >
+            Completed
+          </button>
+        </div>
+        <button
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className="px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors"
+        >
+          {showCreateForm ? "Cancel" : "+ Create New Project"}
+        </button>
+      </div>
+
+      {/* Create Project Form */}
+      {showCreateForm && (
+        <div className="bg-black border border-gray-300 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Create New Project</h2>
+          <form onSubmit={handleCreateProject} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Project Name <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={newProject.name}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, name: e.target.value })
+                }
+                className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                placeholder="Enter project name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Description
+              </label>
+              <textarea
+                value={newProject.description}
+                onChange={(e) =>
+                  setNewProject({ ...newProject, description: e.target.value })
+                }
+                className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100 resize-none"
+                rows={3}
+                placeholder="Enter project description (optional)"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Deal Amount (₹)
+                </label>
+                <input
+                  type="number"
+                  value={newProject.dealAmount}
+                  onChange={(e) =>
+                    setNewProject({ ...newProject, dealAmount: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                  placeholder="0"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Assign to Client
+                </label>
+                <select
+                  value={newProject.userId}
+                  onChange={(e) =>
+                    setNewProject({ ...newProject, userId: e.target.value })
+                  }
+                  className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                >
+                  <option value="">No client assigned</option>
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name} ({client.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {message && (
+              <div
+                className={`p-3 rounded text-sm ${
+                  message.includes("success")
+                    ? "bg-green-500/20 border border-green-500 text-green-300"
+                    : "bg-red-500/20 border border-red-500 text-red-300"
+                }`}
+              >
+                {message}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors"
+            >
+              Create Project
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Projects List */}
+      <div className="bg-black border border-gray-300 rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Projects Management</h2>
+        
+        {filteredProjects.length === 0 ? (
+          <p className="text-gray-400">No projects found</p>
+        ) : (
+          <div className="space-y-4">
+            {filteredProjects.map((project) => (
+              <div
+                key={project.id}
+                className="border border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors"
+              >
+                {editingProject === project.id ? (
+                  // Edit Mode
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold mb-2">{project.name}</h3>
+                        <p className="text-gray-400 text-sm">
+                          {project.description || "No description"}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdateProject(project.id)}
+                          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setEditingProject(null)}
+                          className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Progress (%)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={editForm.progressPercent}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              progressPercent: Number(e.target.value),
+                            })
+                          }
+                          className="w-full px-4 py-2 bg-black border border-gray-300 rounded"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Deal Amount (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={editForm.dealAmount}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              dealAmount: Number(e.target.value),
+                            })
+                          }
+                          className="w-full px-4 py-2 bg-black border border-gray-300 rounded"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Received Amount (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={editForm.receivedAmount}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              receivedAmount: Number(e.target.value),
+                            })
+                          }
+                          className="w-full px-4 py-2 bg-black border border-gray-300 rounded"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Assign Client
+                        </label>
+                        <select
+                          value={editForm.userId}
+                          onChange={(e) =>
+                            setEditForm({ ...editForm, userId: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-black border border-gray-300 rounded"
+                        >
+                          <option value="">No client</option>
+                          {clients.map((client) => (
+                            <option key={client.id} value={client.id}>
+                              {client.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // View Mode
+                  <>
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{project.name}</h3>
+                        <p className="text-gray-400 text-sm mt-1">
+                          {project.description || "No description"}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`px-3 py-1 rounded text-sm ${
+                            project.progressPercent === 100
+                              ? "bg-green-500/20 text-green-300"
+                              : "bg-yellow-500/20 text-yellow-300"
+                          }`}
+                        >
+                          {project.progressPercent}%
+                        </span>
+                        <button
+                          onClick={() => handleStartEdit(project)}
+                          className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors text-sm"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
+                      <div>
+                        <span className="text-gray-400">Deal Amount:</span>
+                        <p className="text-white">₹{project.dealAmount?.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">Received:</span>
+                        <p className="text-white">₹{project.receivedAmount?.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">Pending:</span>
+                        <p className="text-white">
+                          ₹{(project.dealAmount - project.receivedAmount)?.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-gray-700">
+                      <div className="flex justify-between items-center text-sm">
+                        <div>
+                          <span className="text-gray-400">Assigned to:</span>
+                          <p className="text-white">
+                            {project.user?.name || "Not assigned"}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">Work Logs:</span>
+                          <p className="text-white">{project._count?.workLogs || 0}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Success/Error Message */}
+      {message && !showCreateForm && (
+        <div
+          className={`p-3 rounded text-sm ${
+            message.includes("success")
+              ? "bg-green-500/20 border border-green-500 text-green-300"
+              : "bg-red-500/20 border border-red-500 text-red-300"
+          }`}
+        >
+          {message}
+        </div>
+      )}
+    </div>
+  );
+}
+

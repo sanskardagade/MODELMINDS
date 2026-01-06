@@ -50,6 +50,55 @@ const getAllEmployees = async (req, res) => {
   }
 };
 
+// Get all clients (USER role)
+const getAllClients = async (req, res) => {
+  try {
+    const clients = await prisma.user.findMany({
+      where: {
+        role: 'USER',
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    // Get project count for each client
+    const clientsWithProjects = await Promise.all(
+      clients.map(async (client) => {
+        const projectCount = await prisma.project.count({
+          where: {
+            userId: client.id,
+          },
+        });
+
+        return {
+          ...client,
+          projectCount,
+        };
+      })
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        clients: clientsWithProjects,
+      },
+    });
+  } catch (error) {
+    console.error('Get clients error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch clients',
+    });
+  }
+};
+
 // Get all employee work logs (feedback)
 const getAllEmployeeWorkLogs = async (req, res) => {
   try {
@@ -194,7 +243,7 @@ const assignProjectToEmployee = async (req, res) => {
 
 module.exports = {
   getAllEmployees,
+  getAllClients,
   getAllEmployeeWorkLogs,
   assignProjectToEmployee,
 };
-

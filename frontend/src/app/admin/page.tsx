@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import ImageUpload from "@/components/admin/ImageUpload";
 import EmployeeManagement from "@/components/admin/EmployeeManagement";
-import ProjectOverview from "@/components/admin/ProjectOverview";
+import ProjectManagement from "@/components/admin/ProjectManagement";
 import TaskAssignment from "@/components/admin/TaskAssignment";
 import MoneyOverview from "@/components/admin/MoneyOverview";
 import EmployeeFeedback from "@/components/admin/EmployeeFeedback";
+import ClientMessages from "@/components/admin/ClientMessages";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -123,16 +124,27 @@ export default function AdminDashboard() {
           >
             Employee Feedback
           </button>
+          <button
+            onClick={() => setActiveTab("messages")}
+            className={`pb-2 px-4 font-medium transition-colors ${
+              activeTab === "messages"
+                ? "border-b-2 border-white text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Client Messages
+          </button>
         </div>
 
         {/* Tab Content */}
         <div>
-          {activeTab === "projects" && <ProjectOverview />}
+          {activeTab === "projects" && <ProjectManagement />}
           {activeTab === "images" && <ImageUpload />}
           {activeTab === "employees" && <EmployeeManagement />}
           {activeTab === "tasks" && <TaskAssignment />}
           {activeTab === "money" && <MoneyOverview />}
           {activeTab === "feedback" && <EmployeeFeedback />}
+          {activeTab === "messages" && <ClientMessages />}
         </div>
       </div>
     </div>

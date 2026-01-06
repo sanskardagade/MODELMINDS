@@ -34,6 +34,8 @@ model User {
   projectsAsHead     Project[]        @relation("HeadProjects")
   projectsAsUser    Project[]        @relation("UserProjects")
   workLogs           DailyWorkLog[]
+  sentMessages       Message[]        @relation("SentMessages")
+  receivedMessages   Message[]        @relation("ReceivedMessages")
   
   @@map("users")
 }
@@ -56,6 +58,7 @@ model Project {
   images          ProjectImage[]
   workLogs        DailyWorkLog[]
   payments        Payment[]
+  messages        Message[]
   
   @@map("projects")
 }
@@ -104,4 +107,20 @@ model Payment {
   @@map("payments")
 }
 
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  senderId  String
+  receiverId String
+  projectId String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  // Relations
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver  User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  
+  @@map("messages")
+}

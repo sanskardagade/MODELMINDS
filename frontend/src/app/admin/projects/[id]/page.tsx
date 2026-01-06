@@ -13,6 +13,8 @@ export default function EditProject() {
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [clients, setClients] = useState<any[]>([]);
+  const [selectedClientId, setSelectedClientId] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -25,8 +27,23 @@ export default function EditProject() {
   useEffect(() => {
     if (projectId) {
       fetchProject();
+      fetchClients();
     }
   }, [projectId]);
+
+  const fetchClients = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/admin/clients", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setClients(data.data.clients || []);
+      }
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    }
+  };
 
   const fetchProject = async () => {
     try {
@@ -39,6 +56,7 @@ export default function EditProject() {
       const data = await response.json();
       if (data.success) {
         setProject(data.data.project);
+        setSelectedClientId(data.data.project.userId || "");
         setFormData({
           name: data.data.project.name,
           description: data.data.project.description || "",
@@ -75,6 +93,28 @@ export default function EditProject() {
 
       if (!updateResponse.ok) {
         throw new Error("Failed to update project");
+      }
+
+      // Assign client if changed
+      if (selectedClientId !== project.userId) {
+        const assignResponse = await fetch(
+          `http://localhost:5000/api/projects/${projectId}/assign-user`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              userId: selectedClientId || null,
+            }),
+          }
+        );
+        
+        if (!assignResponse.ok) {
+          const assignData = await assignResponse.json();
+          throw new Error(assignData.message || "Failed to assign client");
+        }
       }
 
       // Update progress
@@ -269,6 +309,31 @@ export default function EditProject() {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Client Assignment */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Assign to Client
+              </label>
+              {editing ? (
+                <select
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                  className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                >
+                  <option value="">No client assigned</option>
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name} ({client.email})
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-white">
+                  {project.user?.name || "Not assigned to any client"}
+                </p>
+              )}
             </div>
 
             {editing && (

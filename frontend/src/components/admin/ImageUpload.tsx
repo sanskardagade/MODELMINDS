@@ -10,9 +10,11 @@ export default function ImageUpload() {
   const [message, setMessage] = useState("");
   const [uploadedImages, setUploadedImages] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState("");
   const [createNewProject, setCreateNewProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
+  const [selectedClientId, setSelectedClientId] = useState("");
 
   useEffect(() => {
     // Fetch projects
@@ -26,6 +28,18 @@ export default function ImageUpload() {
         }
       })
       .catch((err) => console.error("Error fetching projects:", err));
+
+    // Fetch clients
+    fetch("http://localhost:5000/api/admin/clients", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setClients(data.data.clients || []);
+        }
+      })
+      .catch((err) => console.error("Error fetching clients:", err));
 
     // Fetch uploaded images
     fetch("http://localhost:5000/api/project-images", {
@@ -89,6 +103,7 @@ export default function ImageUpload() {
           body: JSON.stringify({
             name: newProjectName,
             description: "",
+            userId: selectedClientId || null,
           }),
         });
         const createData = await createResponse.json();
@@ -105,6 +120,7 @@ export default function ImageUpload() {
                 setSelectedProject(projectId);
                 setCreateNewProject(false);
                 setNewProjectName("");
+                setSelectedClientId("");
               }
             });
         } else {
@@ -198,13 +214,32 @@ export default function ImageUpload() {
           </div>
 
           {createNewProject ? (
-            <input
-              type="text"
-              value={newProjectName}
-              onChange={(e) => setNewProjectName(e.target.value)}
-              placeholder="Enter project name"
-              className="w-full px-4 py-2 bg-black border border-gray-300 rounded mt-2"
-            />
+            <div className="space-y-3 mt-2">
+              <input
+                type="text"
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+                placeholder="Enter project name"
+                className="w-full px-4 py-2 bg-black border border-gray-300 rounded"
+              />
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Assign to Client (Optional)
+                </label>
+                <select
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                  className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                >
+                  <option value="">No client assigned</option>
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name} ({client.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           ) : (
             <select
               value={selectedProject}

@@ -173,10 +173,26 @@ const assignProjectToUser = async (req, res) => {
     const { id } = req.params;
     const { userId } = req.body;
 
+    // If userId is null or empty, unassign the project
     if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: 'User ID is required',
+      const project = await prisma.project.update({
+        where: { id },
+        data: { userId: null },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Project unassigned from user successfully',
+        data: { project },
       });
     }
 
