@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  HEAD
+  EMPLOYEE
+  USER
+}
+
+enum PaymentType {
+  RECEIVED
+  PENDING
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  projectsAsHead     Project[]        @relation("HeadProjects")
+  projectsAsUser    Project[]        @relation("UserProjects")
+  workLogs           DailyWorkLog[]
+  
+  @@map("users")
+}
+
+model Project {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  progressPercent Float    @default(0)
+  dealAmount      Float    @default(0)
+  receivedAmount  Float    @default(0)
+  headId          String
+  userId          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  head            User            @relation("HeadProjects", fields: [headId], references: [id], onDelete: Cascade)
+  user            User?           @relation("UserProjects", fields: [userId], references: [id], onDelete: SetNull)
+  images          ProjectImage[]
+  workLogs        DailyWorkLog[]
+  payments        Payment[]
+  
+  @@map("projects")
+}
+
+model ProjectImage {
+  id        String   @id @default(uuid())
+  imageUrl  String
+  publicId  String
+  projectId String
+  createdAt DateTime @default(now())
+
+  // Relations
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@map("project_images")
+}
+
+model DailyWorkLog {
+  id         String   @id @default(uuid())
+  workDone   String
+  percentage Float    @default(0)
+  employeeId String
+  projectId  String
+  date       DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  employee   User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@map("daily_work_logs")
+}
+
+model Payment {
+  id        String      @id @default(uuid())
+  amount    Float
+  type      PaymentType
+  projectId String
+  date      DateTime    @default(now())
+  createdAt DateTime    @default(now())
+
+  // Relations
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@map("payments")
+}
+
+
