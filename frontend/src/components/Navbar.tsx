@@ -48,22 +48,23 @@ export default function Navbar() {
         </Link>
       );
     }
-    return (
-      <Link
-        href="/projects"
-        className={`text-white font-medium ${
-          pathname === "/projects" ? "underline" : ""
-        }`}
-      >
-        Works
-      </Link>
-    );
+    if (pathname === "/login") {
+      return (
+        <Link
+          href="/login"
+          className="text-white font-medium underline"
+        >
+          Login
+        </Link>
+      );
+    }
+    return null;
   };
 
   return (
     <nav className="sticky top-0 z-50 bg-black text-white relative" ref={dropdownRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center relative">
-        {/* Left: Hamburger Menu + Works/Services */}
+        {/* Left: Hamburger Menu + Services/Insights/Login */}
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             className="text-white"
@@ -127,13 +128,6 @@ export default function Navbar() {
       {isOpen && (
         <div className="absolute top-full left-0 w-full bg-black border-t border-gray-800 flex flex-col gap-3 px-6 pb-4 z-50">
           <Link
-            href="/projects"
-            className="text-white py-2 hover:text-gray-300 transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            Works
-          </Link>
-          <Link
             href="/services"
             className="text-white py-2 hover:text-gray-300 transition-colors"
             onClick={() => setIsOpen(false)}
@@ -146,6 +140,13 @@ export default function Navbar() {
             onClick={() => setIsOpen(false)}
           >
             Insights
+          </Link>
+          <Link
+            href="/login"
+            className="text-white py-2 hover:text-gray-300 transition-colors"
+            onClick={() => setIsOpen(false)}
+          >
+            Login
           </Link>
         </div>
       )}

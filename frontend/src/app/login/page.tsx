@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -53,8 +54,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-black text-white">
+      <Navbar />
+      <div className="flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
           <div className="relative w-5 h-5">
             <div className="absolute left-0 top-0 w-[2px] h-full bg-white"></div>
@@ -129,6 +132,7 @@ export default function LoginPage() {
               ← Back to Home
             </Link>
           </div>
+        </div>
         </div>
       </div>
     </div>
