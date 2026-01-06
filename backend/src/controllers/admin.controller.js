@@ -50,7 +50,151 @@ const getAllEmployees = async (req, res) => {
   }
 };
 
+// Get all employee work logs (feedback)
+const getAllEmployeeWorkLogs = async (req, res) => {
+  try {
+    const workLogs = await prisma.dailyWorkLog.findMany({
+      include: {
+        employee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+            name: true,
+            progressPercent: true,
+          },
+        },
+      },
+      orderBy: {
+        date: 'desc',
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: { workLogs },
+    });
+  } catch (error) {
+    console.error('Get employee work logs error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch employee work logs',
+    });
+  }
+};
+
+// Assign project to employee (admin function)
+const assignProjectToEmployee = async (req, res) => {
+  try {
+    const { employeeId, projectId, taskDescription } = req.body;
+
+    if (!employeeId || !projectId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Employee ID and Project ID are required',
+      });
+    }
+
+    if (!taskDescription || !taskDescription.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Task description is required',
+      });
+    }
+
+    // Verify employee exists and is EMPLOYEE role
+    const employee = await prisma.user.findUnique({
+      where: { id: employeeId },
+    });
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: 'Employee not found',
+      });
+    }
+
+    if (employee.role !== 'EMPLOYEE') {
+      return res.status(400).json({
+        success: false,
+        message: 'User is not an employee',
+      });
+    }
+
+    // Verify project exists
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+    });
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found',
+      });
+    }
+
+    // Check if assignment already exists (check for any work log with this employee and project)
+    const existingLog = await prisma.dailyWorkLog.findFirst({
+      where: {
+        employeeId,
+        projectId,
+      },
+      orderBy: {
+        date: 'desc',
+      },
+    });
+
+    // Only warn if there's a recent assignment, but still allow creating new tasks
+    // We'll allow multiple tasks for the same project-employee combination
+
+    // Create work log entry to assign the project with task description
+    const workLog = await prisma.dailyWorkLog.create({
+      data: {
+        projectId,
+        employeeId,
+        workDone: taskDescription.trim(),
+        percentage: 0,
+        date: new Date(),
+      },
+      include: {
+        employee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Task assigned to employee successfully',
+      data: { workLog },
+    });
+  } catch (error) {
+    console.error('Assign project to employee error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to assign project',
+    });
+  }
+};
+
 module.exports = {
   getAllEmployees,
+  getAllEmployeeWorkLogs,
+  assignProjectToEmployee,
 };
 

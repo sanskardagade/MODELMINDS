@@ -7,6 +7,7 @@ export default function TaskAssignment() {
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -48,12 +49,17 @@ export default function TaskAssignment() {
       return;
     }
 
+    if (!taskDescription.trim()) {
+      setMessage("Please enter a task description");
+      return;
+    }
+
     setMessage("");
 
     try {
-      // First, we need to create a work log entry to assign the project
+      // Assign project to employee using admin endpoint
       const response = await fetch(
-        "http://localhost:5000/api/employee/work-logs",
+        "http://localhost:5000/api/admin/assign-project",
         {
           method: "POST",
           headers: {
@@ -61,9 +67,9 @@ export default function TaskAssignment() {
           },
           credentials: "include",
           body: JSON.stringify({
+            employeeId: selectedEmployee,
             projectId: selectedProject,
-            workDone: "Project assigned",
-            percentage: 0,
+            taskDescription: taskDescription.trim(),
           }),
         }
       );
@@ -71,9 +77,10 @@ export default function TaskAssignment() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setMessage("Project assigned successfully!");
+        setMessage("Task assigned successfully!");
         setSelectedEmployee("");
         setSelectedProject("");
+        setTaskDescription("");
         fetchEmployees();
       } else {
         setMessage(data.message || "Assignment failed");
@@ -133,12 +140,29 @@ export default function TaskAssignment() {
           </select>
         </div>
 
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Task Description <span className="text-red-400">*</span>
+          </label>
+          <textarea
+            value={taskDescription}
+            onChange={(e) => setTaskDescription(e.target.value)}
+            className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100 resize-none"
+            rows={4}
+            placeholder="Describe what task needs to be done in this project..."
+            required
+          />
+          <p className="text-gray-500 text-xs mt-1">
+            This task will be assigned to the employee and visible in their dashboard.
+          </p>
+        </div>
+
         <button
           onClick={handleAssign}
-          disabled={!selectedEmployee || !selectedProject}
+          disabled={!selectedEmployee || !selectedProject || !taskDescription.trim()}
           className="px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Assign Project
+          Assign Task
         </button>
       </div>
     </div>

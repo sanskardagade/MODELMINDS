@@ -8,6 +8,7 @@ import EmployeeManagement from "@/components/admin/EmployeeManagement";
 import ProjectOverview from "@/components/admin/ProjectOverview";
 import TaskAssignment from "@/components/admin/TaskAssignment";
 import MoneyOverview from "@/components/admin/MoneyOverview";
+import EmployeeFeedback from "@/components/admin/EmployeeFeedback";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -112,6 +113,16 @@ export default function AdminDashboard() {
           >
             Money
           </button>
+          <button
+            onClick={() => setActiveTab("feedback")}
+            className={`pb-2 px-4 font-medium transition-colors ${
+              activeTab === "feedback"
+                ? "border-b-2 border-white text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Employee Feedback
+          </button>
         </div>
 
         {/* Tab Content */}
@@ -121,6 +132,7 @@ export default function AdminDashboard() {
           {activeTab === "employees" && <EmployeeManagement />}
           {activeTab === "tasks" && <TaskAssignment />}
           {activeTab === "money" && <MoneyOverview />}
+          {activeTab === "feedback" && <EmployeeFeedback />}
         </div>
       </div>
     </div>
