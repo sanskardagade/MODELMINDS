@@ -2,10 +2,13 @@
 
 import { motion } from "framer-motion";
 import { Mail, Linkedin, Phone } from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#000000] text-[#F2F2F2] flex flex-col items-center justify-center px-6 py-20">
+    <div className="min-h-screen bg-[#000000] text-[#F2F2F2]">
+      <Navbar />
+      <div className="flex flex-col items-center justify-center px-6 py-20">
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -94,6 +97,7 @@ export default function ContactPage() {
         We value meaningful connections. Drop us a message or connect through
         LinkedIn to collaborate on something extraordinary.
       </motion.p>
+      </div>
     </div>
   );
 }

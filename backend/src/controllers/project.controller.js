@@ -312,6 +312,60 @@ const updateAmounts = async (req, res) => {
   }
 };
 
+// Update project details
+const updateProject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description } = req.body;
+
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Project name is required',
+      });
+    }
+
+    const updateData = { name: name.trim() };
+    if (description !== undefined) {
+      updateData.description = description.trim() || null;
+    }
+
+    const project = await prisma.project.update({
+      where: { id },
+      data: updateData,
+      include: {
+        head: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        images: true,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Project updated successfully',
+      data: { project },
+    });
+  } catch (error) {
+    console.error('Update project error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update project',
+    });
+  }
+};
+
 // Delete project
 const deleteProject = async (req, res) => {
   try {
@@ -341,6 +395,7 @@ module.exports = {
   assignProjectToUser,
   updateProgress,
   updateAmounts,
+  updateProject,
   deleteProject,
 };
 

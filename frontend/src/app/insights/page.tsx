@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Navbar from "@/components/Navbar";
 
 const insights = [
   {
@@ -37,7 +38,9 @@ const insights = [
 
 export default function InsightsPage() {
   return (
-    <div className="min-h-screen bg-[#000000] text-[#F2F2F2] px-6 md:px-16 py-20">
+    <div className="min-h-screen bg-[#000000] text-[#F2F2F2]">
+      <Navbar />
+      <div className="px-6 md:px-16 py-20">
       {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -123,6 +126,7 @@ export default function InsightsPage() {
           </button>
         </form>
       </motion.div>
+      </div>
     </div>
   );
 }

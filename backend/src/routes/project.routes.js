@@ -6,10 +6,12 @@ const {
   assignProjectToUser,
   updateProgress,
   updateAmounts,
+  updateProject,
   deleteProject,
 } = require('../controllers/project.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { authorize } = require('../middlewares/role.middleware');
+const { validateProject, validateUUID } = require('../middlewares/validation.middleware');
 
 const router = express.Router();
 
@@ -17,14 +19,14 @@ const router = express.Router();
 router.use(authenticate);
 router.use(authorize('HEAD'));
 
-router.post('/', createProject);
+router.post('/', validateProject, createProject);
 router.get('/', getAllProjects);
-router.get('/:id', getProjectById);
-router.put('/:id/assign-user', assignProjectToUser);
-router.put('/:id/progress', updateProgress);
-router.put('/:id/amounts', updateAmounts);
-router.delete('/:id', deleteProject);
+router.get('/:id', validateUUID, getProjectById);
+router.put('/:id', validateUUID, validateProject, updateProject);
+router.put('/:id/assign-user', validateUUID, assignProjectToUser);
+router.put('/:id/progress', validateUUID, updateProgress);
+router.put('/:id/amounts', validateUUID, updateAmounts);
+router.delete('/:id', validateUUID, deleteProject);
 
 module.exports = router;
-
 

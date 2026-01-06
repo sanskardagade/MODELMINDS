@@ -8,6 +8,7 @@ const {
 } = require('../controllers/employee.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { authorize } = require('../middlewares/role.middleware');
+const { validateWorkLog, validateUUID } = require('../middlewares/validation.middleware');
 
 const router = express.Router();
 
@@ -17,10 +18,9 @@ router.use(authorize('EMPLOYEE'));
 
 router.get('/projects', getAssignedProjects);
 router.get('/work-logs', getMyWorkLogs);
-router.get('/work-logs/:projectId', getProjectWorkLogs);
-router.post('/work-logs', addWorkLog);
-router.put('/work-logs/:id', updateWorkLog);
+router.get('/work-logs/:projectId', validateUUID, getProjectWorkLogs);
+router.post('/work-logs', validateWorkLog, addWorkLog);
+router.put('/work-logs/:id', validateUUID, validateWorkLog, updateWorkLog);
 
 module.exports = router;
-
 

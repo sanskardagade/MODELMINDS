@@ -1,5 +1,11 @@
 const errorHandler = (err, req, res, next) => {
-  console.error('Error:', err);
+  // Log error for debugging
+  console.error('Error:', {
+    message: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    code: err.code,
+    name: err.name,
+  });
 
   // Prisma errors
   if (err.code === 'P2002') {
@@ -16,8 +22,22 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
+  if (err.code === 'P2003') {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid reference. Related record does not exist.',
+    });
+  }
+
+  if (err.code === 'P1001') {
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection error. Please check your database configuration and ensure the database server is running.',
+    });
+  }
+
   // Validation errors
-  if (err.name === 'ValidationError') {
+  if (err.name === 'ValidationError' || err.name === 'MulterError') {
     return res.status(400).json({
       success: false,
       message: err.message || 'Validation error',
@@ -28,7 +48,7 @@ const errorHandler = (err, req, res, next) => {
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
       success: false,
-      message: 'Invalid token',
+      message: 'Invalid token. Please login again.',
     });
   }
 
@@ -39,13 +59,24 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Default error
+  // Cast errors (invalid ID format)
+  if (err.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid ID format',
+    });
+  }
+
+  // Default error - don't expose internal errors in production
+  const message = process.env.NODE_ENV === 'development' 
+    ? err.message 
+    : 'Internal server error';
+
   return res.status(err.status || 500).json({
     success: false,
-    message: err.message || 'Internal server error',
+    message,
   });
 };
 
 module.exports = errorHandler;
-
 

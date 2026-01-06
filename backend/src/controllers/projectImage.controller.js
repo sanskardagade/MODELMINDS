@@ -1,6 +1,92 @@
 const prisma = require('../config/db');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../config/cloudinary');
 
+// Upload images for public gallery (no project required)
+const uploadPublicImages = async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No images provided',
+      });
+    }
+
+    if (req.files.length < 2 || req.files.length > 10) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload between 2 and 10 images',
+      });
+    }
+
+    // Create a public gallery project or use a default one
+    let publicProject = await prisma.project.findFirst({
+      where: { name: 'Public Gallery' },
+    });
+
+    if (!publicProject) {
+      publicProject = await prisma.project.create({
+        data: {
+          name: 'Public Gallery',
+          description: 'Public gallery images',
+          headId: req.user.userId,
+        },
+      });
+    }
+
+    // Upload images to Cloudinary
+    const uploadPromises = req.files.map((file) =>
+      uploadToCloudinary(file.buffer, 'gallery')
+    );
+
+    const uploadResults = await Promise.all(uploadPromises);
+
+    // Save image URLs to database
+    const projectImages = await Promise.all(
+      uploadResults.map(({ imageUrl, publicId }) =>
+        prisma.projectImage.create({
+          data: {
+            imageUrl,
+            publicId,
+            projectId: publicProject.id,
+          },
+        })
+      )
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: 'Images uploaded successfully',
+      data: {
+        images: projectImages,
+        count: projectImages.length,
+      },
+    });
+  } catch (error) {
+    console.error('Upload images error:', error);
+    
+    // Handle database connection errors
+    if (error.code === 'P1001') {
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection error. Please check your database configuration.',
+      });
+    }
+    
+    // Handle Cloudinary errors
+    if (error.message && error.message.includes('cloudinary')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Image upload service error. Please check Cloudinary configuration.',
+      });
+    }
+    
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to upload images',
+    });
+  }
+};
+
 // Upload images to project
 const uploadProjectImages = async (req, res) => {
   try {
@@ -13,10 +99,10 @@ const uploadProjectImages = async (req, res) => {
       });
     }
 
-    if (req.files.length < 6 || req.files.length > 10) {
+    if (req.files.length < 2 || req.files.length > 10) {
       return res.status(400).json({
         success: false,
-        message: 'Please upload between 6 and 10 images',
+        message: 'Please upload between 2 and 10 images',
       });
     }
 
@@ -62,9 +148,26 @@ const uploadProjectImages = async (req, res) => {
     });
   } catch (error) {
     console.error('Upload images error:', error);
+    
+    // Handle database connection errors
+    if (error.code === 'P1001') {
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection error. Please check your database configuration.',
+      });
+    }
+    
+    // Handle Cloudinary errors
+    if (error.message && error.message.includes('cloudinary')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Image upload service error. Please check Cloudinary configuration.',
+      });
+    }
+    
     return res.status(500).json({
       success: false,
-      message: 'Failed to upload images',
+      message: error.message || 'Failed to upload images',
     });
   }
 };
@@ -134,10 +237,35 @@ const getProjectImages = async (req, res) => {
   }
 };
 
+// Get all images (for admin)
+const getAllImages = async (req, res) => {
+  try {
+    const images = await prisma.projectImage.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        images,
+        count: images.length,
+      },
+    });
+  } catch (error) {
+    console.error('Get all images error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch images',
+    });
+  }
+};
+
 module.exports = {
+  uploadPublicImages,
   uploadProjectImages,
   deleteProjectImage,
   getProjectImages,
+  getAllImages,
 };
-
-

@@ -8,6 +8,7 @@ const {
 } = require('../controllers/payment.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { authorize } = require('../middlewares/role.middleware');
+const { validatePayment, validateUUID } = require('../middlewares/validation.middleware');
 
 const router = express.Router();
 
@@ -15,12 +16,11 @@ const router = express.Router();
 router.use(authenticate);
 router.use(authorize('HEAD'));
 
-router.post('/', addPayment);
+router.post('/', validatePayment, addPayment);
 router.get('/summary', getPaymentSummary);
-router.get('/:projectId', getProjectPayments);
-router.put('/:id', updatePayment);
-router.delete('/:id', deletePayment);
+router.get('/:projectId', validateUUID, getProjectPayments);
+router.put('/:id', validateUUID, validatePayment, updatePayment);
+router.delete('/:id', validateUUID, deletePayment);
 
 module.exports = router;
-
 

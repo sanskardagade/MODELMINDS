@@ -15,9 +15,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="transition-colors duration-500 bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+      <body className="transition-colors duration-500 bg-black text-white">
         <ThemeProvider attribute="class" defaultTheme="dark">
-          <Navbar />
           <main className="min-h-screen">{children}</main>
         </ThemeProvider>
       </body>
