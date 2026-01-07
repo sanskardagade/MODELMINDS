@@ -7,11 +7,11 @@ export default function Services() {
     <div className="min-h-screen bg-black text-white">
       <Navbar />
       {/* Exterior Section */}
-      <section className="w-full py-16 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="w-full py-8 sm:py-12 md:py-16 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
           {/* Text Content */}
           <div className="text-white space-y-4">
-            <p className="text-base leading-relaxed">
+            <p className="text-sm sm:text-base leading-relaxed">
               Experience your project in its future environment before a single
               shovel breaks ground. We generate cinematic exterior perspectives,
               grounded in realistic lighting, landscaping, and atmospheric
@@ -27,8 +27,8 @@ export default function Services() {
               fill
               className="object-cover"
             />
-            <div className="absolute bottom-0 right-0 p-6">
-              <h2 className="text-6xl md:text-7xl font-bold text-white">
+            <div className="absolute bottom-0 right-0 p-3 sm:p-4 md:p-6">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white">
                 Exterior
               </h2>
             </div>
@@ -37,11 +37,11 @@ export default function Services() {
       </section>
 
       {/* Interior Section */}
-      <section className="w-full py-16 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="w-full py-8 sm:py-12 md:py-16 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
           {/* Text Content */}
           <div className="text-white space-y-4 md:order-2">
-            <p className="text-base leading-relaxed">
+            <p className="text-sm sm:text-base leading-relaxed">
               Craft an emotional connection before construction begins. Our
               interior renders are meticulously detailed experiences, providing
               architects and designers the ultimate tool for client communication
@@ -57,8 +57,8 @@ export default function Services() {
               fill
               className="object-cover"
             />
-            <div className="absolute bottom-0 right-0 p-6">
-              <h2 className="text-6xl md:text-7xl font-bold text-white">
+            <div className="absolute bottom-0 right-0 p-3 sm:p-4 md:p-6">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white">
                 Interior
               </h2>
             </div>

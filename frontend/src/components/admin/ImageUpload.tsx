@@ -188,29 +188,33 @@ export default function ImageUpload() {
         {/* Project Selection */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Select Project</label>
-          <div className="flex gap-4 items-center mb-2">
-            <input
-              type="radio"
-              id="existing"
-              name="projectType"
-              checked={!createNewProject}
-              onChange={() => setCreateNewProject(false)}
-              className="mr-2"
-            />
-            <label htmlFor="existing" className="cursor-pointer">
-              Existing Project
-            </label>
-            <input
-              type="radio"
-              id="new"
-              name="projectType"
-              checked={createNewProject}
-              onChange={() => setCreateNewProject(true)}
-              className="ml-4 mr-2"
-            />
-            <label htmlFor="new" className="cursor-pointer">
-              Create New Project
-            </label>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center mb-2">
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="existing"
+                name="projectType"
+                checked={!createNewProject}
+                onChange={() => setCreateNewProject(false)}
+                className="mr-2"
+              />
+              <label htmlFor="existing" className="cursor-pointer text-sm sm:text-base">
+                Existing Project
+              </label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="new"
+                name="projectType"
+                checked={createNewProject}
+                onChange={() => setCreateNewProject(true)}
+                className="mr-2"
+              />
+              <label htmlFor="new" className="cursor-pointer text-sm sm:text-base">
+                Create New Project
+              </label>
+            </div>
           </div>
 
           {createNewProject ? (
@@ -277,7 +281,7 @@ export default function ImageUpload() {
         )}
 
         {previews.length > 0 && (
-          <div className="grid grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
             {previews.map((preview, index) => (
               <div key={index} className="relative aspect-square">
                 <Image
@@ -302,9 +306,9 @@ export default function ImageUpload() {
 
       {/* Uploaded Images */}
       {uploadedImages.length > 0 && (
-        <div className="bg-black border border-gray-300 rounded-lg p-6">
+        <div className="bg-black border border-gray-300 rounded-lg p-4 sm:p-6">
           <h2 className="text-xl font-semibold mb-4">Uploaded Images</h2>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {uploadedImages.map((img: any) => (
               <div key={img.id} className="relative aspect-square">
                 <Image

@@ -56,9 +56,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <div className="flex items-center justify-center px-6 py-12">
+      <div className="flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
         <div className="w-full max-w-md">
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex items-center justify-center gap-2 mb-6 sm:mb-8">
           <div className="relative w-5 h-5">
             <div className="absolute left-0 top-0 w-[2px] h-full bg-white"></div>
             <div className="absolute right-0 top-0 w-[2px] h-full bg-white"></div>
@@ -67,15 +67,15 @@ export default function LoginPage() {
             <div className="absolute left-0 bottom-0 w-full h-[1px] bg-white"></div>
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-white text-xl font-normal tracking-tight">Model</span>
-            <span className="text-white text-xl font-normal tracking-tight">
+            <span className="text-white text-lg sm:text-xl font-normal tracking-tight">Model</span>
+            <span className="text-white text-lg sm:text-xl font-normal tracking-tight">
               Minds<span className="text-red-500">.</span>
             </span>
           </div>
         </div>
 
-        <div className="bg-black border border-gray-300 rounded-lg p-8">
-          <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
+        <div className="bg-black border border-gray-300 rounded-lg p-6 sm:p-8">
+          <h1 className="text-xl sm:text-2xl font-semibold mb-6 text-center">Login</h1>
 
           {error && (
             <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-red-300 text-sm">

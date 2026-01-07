@@ -182,20 +182,20 @@ export default function EditProject() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <button
           onClick={() => router.push("/admin")}
-          className="mb-4 text-gray-400 hover:text-white"
+          className="mb-4 text-gray-400 hover:text-white text-sm sm:text-base"
         >
           ← Back to Dashboard
         </button>
 
-        <div className="bg-black border border-gray-300 rounded-lg p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold">Edit Project</h1>
+        <div className="bg-black border border-gray-300 rounded-lg p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+            <h1 className="text-xl sm:text-2xl font-semibold">Edit Project</h1>
             <button
               onClick={() => setEditing(!editing)}
-              className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400"
+              className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 text-sm sm:text-base w-full sm:w-auto"
             >
               {editing ? "Cancel" : "Edit"}
             </button>
@@ -240,7 +240,7 @@ export default function EditProject() {
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Progress (%)
@@ -348,9 +348,9 @@ export default function EditProject() {
 
           {/* Project Images */}
           {project.images && project.images.length > 0 && (
-            <div className="mt-8">
-              <h2 className="text-xl font-semibold mb-4">Project Images</h2>
-              <div className="grid grid-cols-4 gap-4">
+            <div className="mt-6 sm:mt-8">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4">Project Images</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                 {project.images.map((img: any) => (
                   <div key={img.id} className="relative aspect-square">
                     <Image

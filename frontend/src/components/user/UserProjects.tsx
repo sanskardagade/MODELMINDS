@@ -50,7 +50,7 @@ export default function UserProjects() {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-black border border-gray-300 rounded-lg overflow-hidden hover:border-gray-100 transition-colors"
+              className="bg-black border-2 border-gray-300 rounded-lg overflow-hidden hover:border-gray-100 transition-colors"
             >
               {project.images && project.images[0] && (
                 <div className="relative w-full h-48">
@@ -99,4 +99,5 @@ export default function UserProjects() {
     </div>
   );
 }
+
 

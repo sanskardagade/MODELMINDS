@@ -42,10 +42,10 @@ export default function EmployeeProjects() {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-wrap gap-2 sm:gap-4 mb-6">
         <button
           onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
             filter === "all"
               ? "bg-gray-300 text-black"
               : "bg-gray-800 text-white hover:bg-gray-700"
@@ -55,7 +55,7 @@ export default function EmployeeProjects() {
         </button>
         <button
           onClick={() => setFilter("ongoing")}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
             filter === "ongoing"
               ? "bg-gray-300 text-black"
               : "bg-gray-800 text-white hover:bg-gray-700"
@@ -65,7 +65,7 @@ export default function EmployeeProjects() {
         </button>
         <button
           onClick={() => setFilter("completed")}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
             filter === "completed"
               ? "bg-gray-300 text-black"
               : "bg-gray-800 text-white hover:bg-gray-700"
@@ -85,7 +85,7 @@ export default function EmployeeProjects() {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="bg-black border border-gray-300 rounded-lg overflow-hidden hover:border-gray-100 transition-colors"
+              className="bg-black border-2 border-gray-300 rounded-lg overflow-hidden hover:border-gray-100 transition-colors"
             >
               {project.images && project.images[0] && (
                 <div className="relative w-full h-48">
@@ -142,4 +142,5 @@ export default function EmployeeProjects() {
     </div>
   );
 }
+
 

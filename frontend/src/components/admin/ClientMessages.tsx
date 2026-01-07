@@ -115,12 +115,12 @@ export default function ClientMessages() {
     <div className="bg-black border border-gray-300 rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4">Client Messages</h2>
       
-      <div className="flex gap-6 h-[600px]">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 h-[500px] sm:h-[550px] md:h-[600px]">
         {/* Conversations List */}
-        <div className="w-1/3 border-r border-gray-700 pr-4 overflow-y-auto">
-          <h3 className="text-sm font-medium text-gray-400 mb-3">Clients</h3>
+        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-700 pb-4 md:pb-0 md:pr-4 overflow-y-auto">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-400 mb-3">Clients</h3>
           {conversations.length === 0 ? (
-            <p className="text-gray-400 text-sm">No conversations yet</p>
+            <p className="text-gray-400 text-xs sm:text-sm">No conversations yet</p>
           ) : (
             <div className="space-y-2">
               {conversations.map((conv) => {
@@ -130,16 +130,16 @@ export default function ClientMessages() {
                   <div
                     key={conv.user.id}
                     onClick={() => handleSelectClient(conv.user)}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                    className={`p-2 sm:p-3 rounded-lg cursor-pointer transition-colors ${
                       isSelected
                         ? "bg-gray-800 border border-gray-600"
                         : "hover:bg-gray-900 border border-transparent"
                     }`}
                   >
                     <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <p className="text-white font-medium">{conv.user.name}</p>
-                        <p className="text-gray-400 text-xs">{conv.user.email}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-medium text-sm sm:text-base truncate">{conv.user.name}</p>
+                        <p className="text-gray-400 text-xs truncate">{conv.user.email}</p>
                         {conv.lastMessage && (
                           <p className="text-gray-500 text-xs mt-1 line-clamp-1">
                             {conv.lastMessage.content}
@@ -147,7 +147,7 @@ export default function ClientMessages() {
                         )}
                       </div>
                       {hasUnread && (
-                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-2 flex-shrink-0">
                           {conv.unreadCount}
                         </span>
                       )}
@@ -160,20 +160,20 @@ export default function ClientMessages() {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {selectedClient ? (
             <>
               {/* Chat Header */}
               <div className="border-b border-gray-700 pb-3 mb-4">
-                <p className="text-gray-400 text-sm">Chatting with</p>
-                <p className="text-white font-medium">{selectedClient.name}</p>
-                <p className="text-gray-500 text-xs">{selectedClient.email}</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Chatting with</p>
+                <p className="text-white font-medium text-sm sm:text-base">{selectedClient.name}</p>
+                <p className="text-gray-500 text-xs truncate">{selectedClient.email}</p>
               </div>
 
               {/* Messages Area */}
               <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
                 {messages.length === 0 ? (
-                  <div className="text-center text-gray-400 py-8">
+                  <div className="text-center text-gray-400 py-8 text-sm">
                     No messages yet. Start a conversation!
                   </div>
                 ) : (
@@ -185,13 +185,13 @@ export default function ClientMessages() {
                         className={`flex ${isSent ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[70%] rounded-lg p-3 ${
+                          className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-2 sm:p-3 ${
                             isSent
                               ? "bg-gray-300 text-black"
                               : "bg-gray-800 text-white"
                           }`}
                         >
-                          <p className="text-sm">{message.content}</p>
+                          <p className="text-xs sm:text-sm break-words">{message.content}</p>
                           <p
                             className={`text-xs mt-1 ${
                               isSent ? "text-gray-600" : "text-gray-400"
@@ -217,13 +217,13 @@ export default function ClientMessages() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 px-4 py-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:border-gray-100"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:border-gray-100 text-sm sm:text-base"
                   disabled={sending}
                 />
                 <button
                   type="submit"
                   disabled={sending || !newMessage.trim()}
-                  className="px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 sm:px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base whitespace-nowrap"
                 >
                   Send
                 </button>
@@ -239,4 +239,5 @@ export default function ClientMessages() {
     </div>
   );
 }
+
 

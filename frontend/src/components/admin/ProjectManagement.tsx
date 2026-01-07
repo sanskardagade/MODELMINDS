@@ -27,6 +27,8 @@ export default function ProjectManagement() {
   });
 
   const [message, setMessage] = useState("");
+  const [deletingProject, setDeletingProject] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProjects();
@@ -186,6 +188,32 @@ export default function ProjectManagement() {
     }
   };
 
+  const handleDeleteProject = async (projectId: string) => {
+    setMessage("");
+    setDeletingProject(projectId);
+    try {
+      const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage("Project deleted successfully!");
+        setConfirmDelete(null);
+        fetchProjects();
+      } else {
+        setMessage(data.message || "Failed to delete project");
+      }
+    } catch (error) {
+      setMessage("Network error. Please try again.");
+      console.error("Delete error:", error);
+    } finally {
+      setDeletingProject(null);
+    }
+  };
+
   const filteredProjects = projects.filter((project) => {
     if (filter === "ongoing") return project.progressPercent < 100;
     if (filter === "completed") return project.progressPercent === 100;
@@ -199,11 +227,11 @@ export default function ProjectManagement() {
   return (
     <div className="space-y-6">
       {/* Header with Create Button */}
-      <div className="flex justify-between items-center">
-        <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-md transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
               filter === "all"
                 ? "bg-gray-300 text-black"
                 : "bg-gray-800 text-white hover:bg-gray-700"
@@ -213,7 +241,7 @@ export default function ProjectManagement() {
           </button>
           <button
             onClick={() => setFilter("ongoing")}
-            className={`px-4 py-2 rounded-md transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
               filter === "ongoing"
                 ? "bg-gray-300 text-black"
                 : "bg-gray-800 text-white hover:bg-gray-700"
@@ -223,7 +251,7 @@ export default function ProjectManagement() {
           </button>
           <button
             onClick={() => setFilter("completed")}
-            className={`px-4 py-2 rounded-md transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
               filter === "completed"
                 ? "bg-gray-300 text-black"
                 : "bg-gray-800 text-white hover:bg-gray-700"
@@ -234,7 +262,7 @@ export default function ProjectManagement() {
         </div>
         <button
           onClick={() => setShowCreateForm(!showCreateForm)}
-          className="px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors"
+          className="px-4 sm:px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors text-sm sm:text-base w-full sm:w-auto"
         >
           {showCreateForm ? "Cancel" : "+ Create New Project"}
         </button>
@@ -242,7 +270,7 @@ export default function ProjectManagement() {
 
       {/* Create Project Form */}
       {showCreateForm && (
-        <div className="bg-black border border-gray-300 rounded-lg p-6">
+        <div className="bg-black border-2 border-gray-300 rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Create New Project</h2>
           <form onSubmit={handleCreateProject} className="space-y-4">
             <div>
@@ -276,7 +304,7 @@ export default function ProjectManagement() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Deal Amount (₹)
@@ -338,7 +366,7 @@ export default function ProjectManagement() {
       )}
 
       {/* Projects List */}
-      <div className="bg-black border border-gray-300 rounded-lg p-6">
+      <div className="bg-black border-2 border-gray-300 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">Projects Management</h2>
         
         {filteredProjects.length === 0 ? (
@@ -348,35 +376,38 @@ export default function ProjectManagement() {
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className="border border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors"
+                className="border-2 border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors"
               >
                 {editingProject === project.id ? (
                   // Edit Mode
                   <div className="space-y-4">
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-start gap-4">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold mb-2">{project.name}</h3>
                         <p className="text-gray-400 text-sm">
                           {project.description || "No description"}
                         </p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 w-full sm:w-auto">
                         <button
                           onClick={() => handleUpdateProject(project.id)}
-                          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm sm:text-base flex-1 sm:flex-none"
                         >
                           Save
                         </button>
                         <button
-                          onClick={() => setEditingProject(null)}
-                          className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                          onClick={() => {
+                            setEditingProject(null);
+                            setConfirmDelete(null);
+                          }}
+                          className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm sm:text-base flex-1 sm:flex-none"
                         >
                           Cancel
                         </button>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">
                           Progress (%)
@@ -458,16 +489,16 @@ export default function ProjectManagement() {
                 ) : (
                   // View Mode
                   <>
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-start gap-3 mb-2">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold">{project.name}</h3>
                         <p className="text-gray-400 text-sm mt-1">
                           {project.description || "No description"}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                         <span
-                          className={`px-3 py-1 rounded text-sm ${
+                          className={`px-3 py-1 rounded text-sm whitespace-nowrap text-center ${
                             project.progressPercent === 100
                               ? "bg-green-500/20 text-green-300"
                               : "bg-yellow-500/20 text-yellow-300"
@@ -475,16 +506,42 @@ export default function ProjectManagement() {
                         >
                           {project.progressPercent}%
                         </span>
-                        <button
-                          onClick={() => handleStartEdit(project)}
-                          className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors text-sm"
-                        >
-                          Edit
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleStartEdit(project)}
+                            className="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors text-sm flex-1 sm:flex-none"
+                          >
+                            Edit
+                          </button>
+                          {confirmDelete === project.id ? (
+                            <div className="flex gap-2 flex-1 sm:flex-none">
+                              <button
+                                onClick={() => handleDeleteProject(project.id)}
+                                disabled={deletingProject === project.id}
+                                className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                              >
+                                {deletingProject === project.id ? "Deleting..." : "Confirm"}
+                              </button>
+                              <button
+                                onClick={() => setConfirmDelete(null)}
+                                className="px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm flex-1"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setConfirmDelete(project.id)}
+                              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm flex-1 sm:flex-none"
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 text-sm">
                       <div>
                         <span className="text-gray-400">Deal Amount:</span>
                         <p className="text-white">₹{project.dealAmount?.toLocaleString()}</p>
@@ -502,7 +559,7 @@ export default function ProjectManagement() {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-gray-700">
-                      <div className="flex justify-between items-center text-sm">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 text-sm">
                         <div>
                           <span className="text-gray-400">Assigned to:</span>
                           <p className="text-white">
@@ -538,4 +595,5 @@ export default function ProjectManagement() {
     </div>
   );
 }
+
 

@@ -51,12 +51,12 @@ export default function UserProjectStatus() {
         {projects.map((project) => (
           <div
             key={project.id}
-            className="border border-gray-700 rounded-lg p-6 hover:border-gray-500 transition-colors"
+            className="border-2 border-gray-700 rounded-lg p-6 hover:border-gray-500 transition-colors"
           >
-            <div className="flex gap-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               {/* Project Image */}
               {project.images && project.images[0] && (
-                <div className="relative w-32 h-32 flex-shrink-0">
+                <div className="relative w-full sm:w-32 h-48 sm:h-32 flex-shrink-0">
                   <Image
                     src={project.images[0].imageUrl}
                     alt={project.name}
@@ -116,14 +116,14 @@ export default function UserProjectStatus() {
                   {/* Additional Info */}
                   <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-700">
                     <div>
-                      <p className="text-gray-400 text-sm mb-1">Work Logs</p>
-                      <p className="text-white font-semibold">
+                      <p className="text-gray-400 text-xs sm:text-sm mb-1">Work Logs</p>
+                      <p className="text-white font-semibold text-sm sm:text-base">
                         {project._count?.workLogs || 0}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-400 text-sm mb-1">Images</p>
-                      <p className="text-white font-semibold">
+                      <p className="text-gray-400 text-xs sm:text-sm mb-1">Images</p>
+                      <p className="text-white font-semibold text-sm sm:text-base">
                         {project._count?.images || 0}
                       </p>
                     </div>
@@ -151,4 +151,5 @@ export default function UserProjectStatus() {
     </div>
   );
 }
+
 

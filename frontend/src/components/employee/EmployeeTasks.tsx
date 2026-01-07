@@ -71,7 +71,7 @@ export default function EmployeeTasks() {
 
   const TaskCard = ({ log }: { log: any }) => (
     <div
-      className="border border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors"
+      className="border-2 border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors"
     >
       <div className="flex justify-between items-start mb-2">
         <div>

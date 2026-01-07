@@ -91,22 +91,22 @@ export default function UserMoney() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Deal Amount</p>
-                    <p className="text-white font-semibold">
+                    <p className="text-gray-400 text-xs sm:text-sm mb-1">Deal Amount</p>
+                    <p className="text-white font-semibold text-sm sm:text-base">
                       ₹{project.dealAmount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Received</p>
-                    <p className="text-green-400 font-semibold">
+                    <p className="text-gray-400 text-xs sm:text-sm mb-1">Received</p>
+                    <p className="text-green-400 font-semibold text-sm sm:text-base">
                       ₹{project.receivedAmount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Pending</p>
-                    <p className="text-red-400 font-semibold">
+                    <p className="text-gray-400 text-xs sm:text-sm mb-1">Pending</p>
+                    <p className="text-red-400 font-semibold text-sm sm:text-base">
                       ₹{project.pendingAmount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
                     </p>
                   </div>
@@ -178,4 +178,5 @@ export default function UserMoney() {
     </div>
   );
 }
+
 

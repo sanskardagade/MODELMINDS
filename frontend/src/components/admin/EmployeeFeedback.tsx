@@ -88,15 +88,15 @@ export default function EmployeeFeedback() {
               key={log.id}
               className="border border-gray-700 rounded-lg p-4 hover:border-gray-500 transition-colors"
             >
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-lg font-medium text-white mb-1">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-start gap-3 mb-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base sm:text-lg font-medium text-white mb-1">
                     {log.employee.name}
                   </h3>
-                  <p className="text-gray-400 text-sm">{log.employee.email}</p>
+                  <p className="text-gray-400 text-xs sm:text-sm break-words">{log.employee.email}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-gray-400 text-sm">
+                <div className="text-left sm:text-right">
+                  <p className="text-gray-400 text-xs sm:text-sm">
                     {new Date(log.date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
@@ -138,4 +138,5 @@ export default function EmployeeFeedback() {
     </div>
   );
 }
+
 

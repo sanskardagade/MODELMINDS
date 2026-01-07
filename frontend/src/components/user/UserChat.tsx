@@ -116,11 +116,11 @@ export default function UserChat() {
       <h2 className="text-xl font-semibold mb-4">Chat with Admin</h2>
       
       {adminUser ? (
-        <div className="flex flex-col h-[600px]">
+        <div className="flex flex-col h-[400px] sm:h-[500px] md:h-[600px]">
           {/* Chat Header */}
           <div className="border-b border-gray-700 pb-3 mb-4">
-            <p className="text-gray-400 text-sm">Chatting with</p>
-            <p className="text-white font-medium">{adminUser.name}</p>
+            <p className="text-gray-400 text-xs sm:text-sm">Chatting with</p>
+            <p className="text-white font-medium text-sm sm:text-base">{adminUser.name}</p>
           </div>
 
           {/* Messages Area */}
@@ -138,13 +138,13 @@ export default function UserChat() {
                     className={`flex ${isSent ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[70%] rounded-lg p-3 ${
+                      className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-2 sm:p-3 ${
                         isSent
                           ? "bg-gray-300 text-black"
                           : "bg-gray-800 text-white"
                       }`}
                     >
-                      <p className="text-sm">{message.content}</p>
+                      <p className="text-xs sm:text-sm break-words">{message.content}</p>
                       <p
                         className={`text-xs mt-1 ${
                           isSent ? "text-gray-600" : "text-gray-400"
@@ -170,13 +170,13 @@ export default function UserChat() {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type a message..."
-              className="flex-1 px-4 py-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:border-gray-100"
+              className="flex-1 px-3 sm:px-4 py-2 bg-black border border-gray-300 rounded-md focus:outline-none focus:border-gray-100 text-sm sm:text-base"
               disabled={sending}
             />
             <button
               type="submit"
               disabled={sending || !newMessage.trim()}
-              className="px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 sm:px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base whitespace-nowrap"
             >
               Send
             </button>

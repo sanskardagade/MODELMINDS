@@ -50,21 +50,21 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Link
           href="/"
-          className="mb-4 inline-block text-gray-400 hover:text-white"
+          className="mb-4 inline-block text-gray-400 hover:text-white text-sm sm:text-base"
         >
           ← Back to Home
         </Link>
 
         {project && (
           <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">{project.name}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{project.name}</h1>
             {project.description && (
-              <p className="text-gray-400">{project.description}</p>
+              <p className="text-gray-400 text-sm sm:text-base">{project.description}</p>
             )}
-            <div className="mt-4 flex gap-6 text-sm">
+            <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:gap-6 text-sm">
               <div>
                 <span className="text-gray-400">Progress: </span>
                 <span className="text-white">{project.progressPercent}%</span>
@@ -81,11 +81,11 @@ export default function ProjectDetail() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {images.map((img: any) => (
             <div
               key={img.id}
-              className="relative aspect-square bg-black border border-gray-300 rounded overflow-hidden group cursor-pointer"
+              className="relative aspect-square bg-black border-2 border-gray-300 rounded overflow-hidden group cursor-pointer"
             >
               <Image
                 src={img.imageUrl}

@@ -37,34 +37,37 @@ export default function EmployeeManagement() {
       {employees.length === 0 ? (
         <p className="text-gray-400">No employees found</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-300">
-                <th className="text-left py-3 px-4">Name</th>
-                <th className="text-left py-3 px-4">Email</th>
-                <th className="text-left py-3 px-4">Assigned Projects</th>
-                <th className="text-left py-3 px-4">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {employees.map((employee) => (
-                <tr key={employee.id} className="border-b border-gray-800">
-                  <td className="py-3 px-4">{employee.name}</td>
-                  <td className="py-3 px-4">{employee.email}</td>
-                  <td className="py-3 px-4">{employee.projectCount || 0}</td>
-                  <td className="py-3 px-4">
-                    <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-sm">
-                      Active
-                    </span>
-                  </td>
+        <div className="overflow-x-auto -mx-6 sm:mx-0">
+          <div className="inline-block min-w-full align-middle px-6 sm:px-0">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-300">
+                  <th className="text-left py-3 px-2 sm:px-4 text-sm sm:text-base">Name</th>
+                  <th className="text-left py-3 px-2 sm:px-4 text-sm sm:text-base">Email</th>
+                  <th className="text-left py-3 px-2 sm:px-4 text-sm sm:text-base">Assigned Projects</th>
+                  <th className="text-left py-3 px-2 sm:px-4 text-sm sm:text-base">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {employees.map((employee) => (
+                  <tr key={employee.id} className="border-b border-gray-800">
+                    <td className="py-3 px-2 sm:px-4 text-sm sm:text-base">{employee.name}</td>
+                    <td className="py-3 px-2 sm:px-4 text-sm sm:text-base break-all">{employee.email}</td>
+                    <td className="py-3 px-2 sm:px-4 text-sm sm:text-base">{employee.projectCount || 0}</td>
+                    <td className="py-3 px-2 sm:px-4 text-sm sm:text-base">
+                      <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs sm:text-sm">
+                        Active
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
   );
 }
+
 

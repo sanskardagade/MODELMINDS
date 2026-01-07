@@ -26,27 +26,27 @@ export default function Home() {
       <Navbar />
       
       {/* Projects Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {loading ? (
           <div className="text-center py-12 text-gray-400">Loading projects...</div>
         ) : projects.length === 0 ? (
-          <div className="grid grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             {Array.from({ length: 10 }, (_, i) => (
               <div
                 key={i}
-                className="relative aspect-[4/3] bg-black border border-gray-300 hover:border-gray-100 hover:border-2 transition-all duration-300"
+                className="relative aspect-[4/3] bg-black border-2 border-gray-300 hover:border-gray-100 hover:border-4 transition-all duration-300"
               >
                 {/* Empty placeholder */}
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             {projects.map((project: any) => (
               <Link
                 key={project.id}
                 href={`/project/${project.id}`}
-                className="relative aspect-[4/3] bg-black border border-gray-300 hover:border-gray-100 hover:border-2 transition-all duration-300 cursor-pointer group overflow-hidden"
+                className="relative aspect-[4/3] bg-black border-2 border-gray-300 hover:border-gray-100 hover:border-4 transition-all duration-300 cursor-pointer group overflow-hidden"
               >
                 {project.images && project.images[0] && (
                   <Image
@@ -57,11 +57,11 @@ export default function Home() {
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-semibold text-lg mb-1">
+                  <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4">
+                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1">
                       {project.name}
                     </h3>
-                    <p className="text-gray-300 text-sm">
+                    <p className="text-gray-300 text-xs sm:text-sm">
                       {project._count?.images || 0} images
                       {project.progressPercent > 0 && (
                         <span className="ml-2">• {project.progressPercent}%</span>
