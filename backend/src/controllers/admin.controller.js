@@ -1,4 +1,5 @@
 const prisma = require('../config/db');
+const { hashPassword } = require('../utils/bcrypt');
 
 // Get all employees
 const getAllEmployees = async (req, res) => {
@@ -241,9 +242,169 @@ const assignProjectToEmployee = async (req, res) => {
   }
 };
 
+// Create a new employee
+const createEmployee = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Validation
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name is required',
+      });
+    }
+
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required',
+      });
+    }
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password is required and must be at least 6 characters',
+      });
+    }
+
+    // Check if email already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already exists',
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // Create employee
+    const employee = await prisma.user.create({
+      data: {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password: hashedPassword,
+        role: 'EMPLOYEE',
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Employee created successfully',
+      data: { employee },
+    });
+  } catch (error) {
+    console.error('Create employee error:', error);
+    if (error.code === 'P2002') {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already exists',
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create employee',
+    });
+  }
+};
+
+// Create a new client
+const createClient = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Validation
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name is required',
+      });
+    }
+
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required',
+      });
+    }
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password is required and must be at least 6 characters',
+      });
+    }
+
+    // Check if email already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already exists',
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // Create client
+    const client = await prisma.user.create({
+      data: {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password: hashedPassword,
+        role: 'USER',
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Client created successfully',
+      data: { client },
+    });
+  } catch (error) {
+    console.error('Create client error:', error);
+    if (error.code === 'P2002') {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already exists',
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create client',
+    });
+  }
+};
+
 module.exports = {
   getAllEmployees,
   getAllClients,
   getAllEmployeeWorkLogs,
   assignProjectToEmployee,
+  createEmployee,
+  createClient,
 };

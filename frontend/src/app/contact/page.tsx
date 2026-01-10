@@ -15,7 +15,7 @@ export default function ContactPage() {
         transition={{ duration: 0.7 }}
         className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 md:mb-10 text-center tracking-wide"
       >
-        Contact Our<span className="text-[#FFBF00]"> Team</span>
+        Contact <span className="text-[#FFBF00]"> Us</span>
       </motion.h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10 max-w-5xl w-full">
@@ -26,7 +26,7 @@ export default function ContactPage() {
           className="border border-[#FFBF00] rounded-2xl p-6 sm:p-8 bg-black/30 backdrop-blur-lg shadow-lg hover:shadow-yellow-500/40 transition-all"
         >
           <h2 className="text-2xl sm:text-3xl font-semibold text-[#FFBF00] mb-3 sm:mb-4">
-            Utkarsh Kasliwal
+            Ar. Utkarsh Kasliwal
           </h2>
           <p className="text-[#B6B09F] mb-4 sm:mb-6 text-sm sm:text-base">
             Passionate about innovation, technology, and impactful solutions.

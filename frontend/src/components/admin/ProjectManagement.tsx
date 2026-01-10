@@ -7,6 +7,7 @@ export default function ProjectManagement() {
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showCreateClientForm, setShowCreateClientForm] = useState(false);
   const [editingProject, setEditingProject] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "ongoing" | "completed">("all");
   
@@ -16,6 +17,13 @@ export default function ProjectManagement() {
     description: "",
     dealAmount: "",
     userId: "",
+  });
+
+  // Create client form
+  const [newClient, setNewClient] = useState({
+    name: "",
+    email: "",
+    password: "",
   });
 
   // Edit project form
@@ -62,6 +70,61 @@ export default function ProjectManagement() {
       }
     } catch (error) {
       console.error("Error fetching clients:", error);
+    }
+  };
+
+  const handleCreateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage("");
+
+    if (!newClient.name.trim()) {
+      setMessage("Client name is required");
+      return;
+    }
+
+    if (!newClient.email.trim()) {
+      setMessage("Email is required");
+      return;
+    }
+
+    if (!newClient.password || newClient.password.length < 6) {
+      setMessage("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/admin/clients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          name: newClient.name.trim(),
+          email: newClient.email.trim(),
+          password: newClient.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage("Client created successfully!");
+        setNewClient({
+          name: "",
+          email: "",
+          password: "",
+        });
+        setShowCreateClientForm(false);
+        fetchClients();
+        // Refresh project form to include new client in dropdown
+        fetchProjects();
+      } else {
+        setMessage(data.message || "Failed to create client");
+      }
+    } catch (error) {
+      setMessage("Network error. Please try again.");
+      console.error("Create client error:", error);
     }
   };
 
@@ -226,47 +289,133 @@ export default function ProjectManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Create Button */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex flex-wrap gap-2 sm:gap-4">
-          <button
-            onClick={() => setFilter("all")}
-            className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
-              filter === "all"
-                ? "bg-gray-300 text-black"
-                : "bg-gray-800 text-white hover:bg-gray-700"
-            }`}
-          >
-            All Projects
-          </button>
-          <button
-            onClick={() => setFilter("ongoing")}
-            className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
-              filter === "ongoing"
-                ? "bg-gray-300 text-black"
-                : "bg-gray-800 text-white hover:bg-gray-700"
-            }`}
-          >
-            Ongoing
-          </button>
-          <button
-            onClick={() => setFilter("completed")}
-            className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
-              filter === "completed"
-                ? "bg-gray-300 text-black"
-                : "bg-gray-800 text-white hover:bg-gray-700"
-            }`}
-          >
-            Completed
-          </button>
+      {/* Header with Create Buttons */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
+            <button
+              onClick={() => setFilter("all")}
+              className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
+                filter === "all"
+                  ? "bg-gray-300 text-black"
+                  : "bg-gray-800 text-white hover:bg-gray-700"
+              }`}
+            >
+              All Projects
+            </button>
+            <button
+              onClick={() => setFilter("ongoing")}
+              className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
+                filter === "ongoing"
+                  ? "bg-gray-300 text-black"
+                  : "bg-gray-800 text-white hover:bg-gray-700"
+              }`}
+            >
+              Ongoing
+            </button>
+            <button
+              onClick={() => setFilter("completed")}
+              className={`px-3 sm:px-4 py-2 rounded-md transition-colors text-sm sm:text-base ${
+                filter === "completed"
+                  ? "bg-gray-300 text-black"
+                  : "bg-gray-800 text-white hover:bg-gray-700"
+              }`}
+            >
+              Completed
+            </button>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => setShowCreateClientForm(!showCreateClientForm)}
+              className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base w-full sm:w-auto"
+            >
+              {showCreateClientForm ? "Cancel Client" : "+ Create Client"}
+            </button>
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="px-4 sm:px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors text-sm sm:text-base w-full sm:w-auto"
+            >
+              {showCreateForm ? "Cancel Project" : "+ Create Project"}
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => setShowCreateForm(!showCreateForm)}
-          className="px-4 sm:px-6 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 transition-colors text-sm sm:text-base w-full sm:w-auto"
-        >
-          {showCreateForm ? "Cancel" : "+ Create New Project"}
-        </button>
       </div>
+
+      {/* Create Client Form */}
+      {showCreateClientForm && (
+        <div className="bg-black border-2 border-blue-500 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Create New Client</h2>
+          <form onSubmit={handleCreateClient} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Name <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={newClient.name}
+                onChange={(e) =>
+                  setNewClient({ ...newClient, name: e.target.value })
+                }
+                className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                placeholder="Enter client name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Email <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="email"
+                value={newClient.email}
+                onChange={(e) =>
+                  setNewClient({ ...newClient, email: e.target.value })
+                }
+                className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                placeholder="Enter client email"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Password <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="password"
+                value={newClient.password}
+                onChange={(e) =>
+                  setNewClient({ ...newClient, password: e.target.value })
+                }
+                className="w-full px-4 py-2 bg-black border border-gray-300 rounded focus:outline-none focus:border-gray-100"
+                placeholder="Enter password (min 6 characters)"
+                required
+                minLength={6}
+              />
+            </div>
+
+            {message && showCreateClientForm && (
+              <div
+                className={`p-3 rounded text-sm ${
+                  message.includes("success")
+                    ? "bg-green-500/20 border border-green-500 text-green-300"
+                    : "bg-red-500/20 border border-red-500 text-red-300"
+                }`}
+              >
+                {message}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Create Client
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Create Project Form */}
       {showCreateForm && (
@@ -343,7 +492,7 @@ export default function ProjectManagement() {
               </div>
             </div>
 
-            {message && (
+            {message && showCreateForm && !showCreateClientForm && (
               <div
                 className={`p-3 rounded text-sm ${
                   message.includes("success")
