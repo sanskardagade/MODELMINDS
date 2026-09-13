@@ -28,7 +28,7 @@ export default function UserChat() {
   const fetchAdminAndMessages = async () => {
     try {
       // Get admin user
-      const adminResponse = await fetch("http://localhost:5000/api/messages/admin", {
+      const adminResponse = await fetch("/api/messages/admin", {
         credentials: "include",
       });
       const adminData = await adminResponse.json();
@@ -51,7 +51,7 @@ export default function UserChat() {
     
     try {
       const response = await fetch(
-        `http://localhost:5000/api/messages/messages?otherUserId=${adminId || adminUser?.id}`,
+        `/api/messages/messages?otherUserId=${adminId || adminUser?.id}`,
         {
           credentials: "include",
         }
@@ -79,7 +79,7 @@ export default function UserChat() {
 
     setSending(true);
     try {
-      const response = await fetch("http://localhost:5000/api/messages/send", {
+      const response = await fetch("/api/messages/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

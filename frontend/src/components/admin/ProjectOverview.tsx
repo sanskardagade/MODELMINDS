@@ -14,7 +14,7 @@ export default function ProjectOverview() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/projects", {
+      const response = await fetch("/api/projects", {
         credentials: "include",
       });
       const data = await response.json();

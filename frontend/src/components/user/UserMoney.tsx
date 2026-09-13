@@ -15,7 +15,7 @@ export default function UserMoney() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/user/projects", {
+      const response = await fetch("/api/user/projects", {
         credentials: "include",
       });
       const data = await response.json();

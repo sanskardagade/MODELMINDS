@@ -23,7 +23,7 @@ export default function ProjectDetail() {
     try {
       // Fetch public project details
       const projectRes = await fetch(
-        `http://localhost:5000/api/public/projects/${projectId}`
+        `/api/public/projects/${projectId}`
       );
       const projectData = await projectRes.json();
 

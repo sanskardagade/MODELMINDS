@@ -15,7 +15,7 @@ export default function EmployeeProjects() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/employee/projects", {
+      const response = await fetch("/api/employee/projects", {
         credentials: "include",
       });
       const data = await response.json();

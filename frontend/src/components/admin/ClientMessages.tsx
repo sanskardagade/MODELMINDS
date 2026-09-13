@@ -34,7 +34,7 @@ export default function ClientMessages() {
 
   const fetchConversations = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/messages/conversations", {
+      const response = await fetch("/api/messages/conversations", {
         credentials: "include",
       });
       const data = await response.json();
@@ -54,7 +54,7 @@ export default function ClientMessages() {
   const fetchMessages = async (clientId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/messages/messages?otherUserId=${clientId}`,
+        `/api/messages/messages?otherUserId=${clientId}`,
         {
           credentials: "include",
         }
@@ -79,7 +79,7 @@ export default function ClientMessages() {
 
     setSending(true);
     try {
-      const response = await fetch("http://localhost:5000/api/messages/send", {
+      const response = await fetch("/api/messages/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

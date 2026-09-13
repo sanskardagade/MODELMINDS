@@ -21,7 +21,7 @@ export default function EmployeeManagement() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/employees", {
+      const response = await fetch("/api/admin/employees", {
         credentials: "include",
       });
       const data = await response.json();
@@ -55,7 +55,7 @@ export default function EmployeeManagement() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/admin/employees", {
+      const response = await fetch("/api/admin/employees", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

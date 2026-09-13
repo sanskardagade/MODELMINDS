@@ -16,7 +16,7 @@ export default function EmployeeFeedback() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/employee/projects", {
+      const response = await fetch("/api/employee/projects", {
         credentials: "include",
       });
       const data = await response.json();
@@ -46,7 +46,7 @@ export default function EmployeeFeedback() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/employee/work-logs", {
+      const response = await fetch("/api/employee/work-logs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

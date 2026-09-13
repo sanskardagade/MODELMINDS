@@ -18,7 +18,7 @@ export default function ImageUpload() {
 
   useEffect(() => {
     // Fetch projects
-    fetch("http://localhost:5000/api/projects", {
+    fetch("/api/projects", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -30,7 +30,7 @@ export default function ImageUpload() {
       .catch((err) => console.error("Error fetching projects:", err));
 
     // Fetch clients
-    fetch("http://localhost:5000/api/admin/clients", {
+    fetch("/api/admin/clients", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -42,7 +42,7 @@ export default function ImageUpload() {
       .catch((err) => console.error("Error fetching clients:", err));
 
     // Fetch uploaded images
-    fetch("http://localhost:5000/api/project-images", {
+    fetch("/api/project-images", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -94,7 +94,7 @@ export default function ImageUpload() {
     // Create new project if needed
     if (createNewProject) {
       try {
-        const createResponse = await fetch("http://localhost:5000/api/projects", {
+        const createResponse = await fetch("/api/projects", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -110,7 +110,7 @@ export default function ImageUpload() {
         if (createData.success) {
           projectId = createData.data.project.id;
           // Refresh projects list
-          fetch("http://localhost:5000/api/projects", {
+          fetch("/api/projects", {
             credentials: "include",
           })
             .then((res) => res.json())
@@ -142,7 +142,7 @@ export default function ImageUpload() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/project-images/${projectId}/upload`,
+        `/api/project-images/${projectId}/upload`,
         {
           method: "POST",
           credentials: "include",
@@ -158,7 +158,7 @@ export default function ImageUpload() {
         setPreviews([]);
         // Refresh uploaded images list
         setTimeout(() => {
-          fetch("http://localhost:5000/api/project-images", {
+          fetch("/api/project-images", {
             credentials: "include",
           })
             .then((res) => res.json())

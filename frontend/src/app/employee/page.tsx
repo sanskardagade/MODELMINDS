@@ -14,7 +14,7 @@ export default function EmployeeDashboard() {
 
   useEffect(() => {
     // Get current user
-    fetch("http://localhost:5000/api/auth/me", {
+    fetch("/api/auth/me", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -34,7 +34,7 @@ export default function EmployeeDashboard() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/logout", {
+      const response = await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });

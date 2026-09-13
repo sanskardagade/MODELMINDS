@@ -45,7 +45,7 @@ export default function ProjectManagement() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/projects", {
+      const response = await fetch("/api/projects", {
         credentials: "include",
       });
       const data = await response.json();
@@ -61,7 +61,7 @@ export default function ProjectManagement() {
 
   const fetchClients = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/clients", {
+      const response = await fetch("/api/admin/clients", {
         credentials: "include",
       });
       const data = await response.json();
@@ -93,7 +93,7 @@ export default function ProjectManagement() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/admin/clients", {
+      const response = await fetch("/api/admin/clients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export default function ProjectManagement() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/projects", {
+      const response = await fetch("/api/projects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -193,7 +193,7 @@ export default function ProjectManagement() {
       // Update progress
       if (editForm.progressPercent !== project.progressPercent) {
         await fetch(
-          `http://localhost:5000/api/projects/${projectId}/progress`,
+          `/api/projects/${projectId}/progress`,
           {
             method: "PUT",
             headers: {
@@ -212,7 +212,7 @@ export default function ProjectManagement() {
         editForm.dealAmount !== project.dealAmount ||
         editForm.receivedAmount !== project.receivedAmount
       ) {
-        await fetch(`http://localhost:5000/api/projects/${projectId}/amounts`, {
+        await fetch(`/api/projects/${projectId}/amounts`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -228,7 +228,7 @@ export default function ProjectManagement() {
       // Update client assignment
       if (editForm.userId !== project.userId) {
         await fetch(
-          `http://localhost:5000/api/projects/${projectId}/assign-user`,
+          `/api/projects/${projectId}/assign-user`,
           {
             method: "PUT",
             headers: {
@@ -255,7 +255,7 @@ export default function ProjectManagement() {
     setMessage("");
     setDeletingProject(projectId);
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+      const response = await fetch(`/api/projects/${projectId}`, {
         method: "DELETE",
         credentials: "include",
       });

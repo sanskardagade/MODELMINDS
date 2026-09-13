@@ -14,10 +14,10 @@ export default function MoneyOverview() {
   const fetchMoneyData = async () => {
     try {
       const [summaryRes, projectsRes] = await Promise.all([
-        fetch("http://localhost:5000/api/payments/summary", {
+        fetch("/api/payments/summary", {
           credentials: "include",
         }),
-        fetch("http://localhost:5000/api/projects", {
+        fetch("/api/projects", {
           credentials: "include",
         }),
       ]);

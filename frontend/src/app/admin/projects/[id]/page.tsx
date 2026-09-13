@@ -33,7 +33,7 @@ export default function EditProject() {
 
   const fetchClients = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/clients", {
+      const response = await fetch("/api/admin/clients", {
         credentials: "include",
       });
       const data = await response.json();
@@ -48,7 +48,7 @@ export default function EditProject() {
   const fetchProject = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/projects/${projectId}`,
+        `/api/projects/${projectId}`,
         {
           credentials: "include",
         }
@@ -77,7 +77,7 @@ export default function EditProject() {
     try {
       // Update project details
       const updateResponse = await fetch(
-        `http://localhost:5000/api/projects/${projectId}`,
+        `/api/projects/${projectId}`,
         {
           method: "PUT",
           headers: {
@@ -98,7 +98,7 @@ export default function EditProject() {
       // Assign client if changed
       if (selectedClientId !== project.userId) {
         const assignResponse = await fetch(
-          `http://localhost:5000/api/projects/${projectId}/assign-user`,
+          `/api/projects/${projectId}/assign-user`,
           {
             method: "PUT",
             headers: {
@@ -120,7 +120,7 @@ export default function EditProject() {
       // Update progress
       if (formData.progressPercent !== project.progressPercent) {
         await fetch(
-          `http://localhost:5000/api/projects/${projectId}/progress`,
+          `/api/projects/${projectId}/progress`,
           {
             method: "PUT",
             headers: {
@@ -139,7 +139,7 @@ export default function EditProject() {
         formData.dealAmount !== project.dealAmount ||
         formData.receivedAmount !== project.receivedAmount
       ) {
-        await fetch(`http://localhost:5000/api/projects/${projectId}/amounts`, {
+        await fetch(`/api/projects/${projectId}/amounts`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

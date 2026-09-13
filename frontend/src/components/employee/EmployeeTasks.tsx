@@ -13,7 +13,7 @@ export default function EmployeeTasks() {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/employee/work-logs", {
+      const response = await fetch("/api/employee/work-logs", {
         credentials: "include",
       });
       const data = await response.json();
@@ -31,7 +31,7 @@ export default function EmployeeTasks() {
     setMarkingComplete(logId);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/employee/work-logs/${logId}`,
+        `/api/employee/work-logs/${logId}`,
         {
           method: "PUT",
           headers: {

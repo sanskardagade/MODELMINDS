@@ -17,7 +17,7 @@ export default function TaskAssignment() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/employees", {
+      const response = await fetch("/api/admin/employees", {
         credentials: "include",
       });
       const data = await response.json();
@@ -31,7 +31,7 @@ export default function TaskAssignment() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/projects", {
+      const response = await fetch("/api/projects", {
         credentials: "include",
       });
       const data = await response.json();
@@ -59,7 +59,7 @@ export default function TaskAssignment() {
     try {
       // Assign project to employee using admin endpoint
       const response = await fetch(
-        "http://localhost:5000/api/admin/assign-project",
+        "/api/admin/assign-project",
         {
           method: "POST",
           headers: {

@@ -15,7 +15,7 @@ export default function EmployeeFeedback() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/employees", {
+      const response = await fetch("/api/admin/employees", {
         credentials: "include",
       });
       const data = await response.json();
@@ -29,7 +29,7 @@ export default function EmployeeFeedback() {
 
   const fetchFeedback = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/employee-feedback", {
+      const response = await fetch("/api/admin/employee-feedback", {
         credentials: "include",
       });
       const data = await response.json();

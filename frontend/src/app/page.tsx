@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch public projects with images
-    fetch("http://localhost:5000/api/public/projects")
+    fetch("/api/public/projects")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
