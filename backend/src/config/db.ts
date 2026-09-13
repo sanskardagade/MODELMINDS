@@ -1,12 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import type { QueryEvent } from "@prisma/client/runtime/library";
 
-const prisma = new PrismaClient();
-
-prisma.$on("query", (e: QueryEvent) => {
-  console.log(`Query: ${e.query}`);
-  console.log(`Params: ${e.params}`);
-  console.log(`Duration: ${e.duration}ms`);
+const prisma = new PrismaClient({
+  log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
 });
 
 async function connectDB() {
@@ -20,4 +15,3 @@ async function connectDB() {
 }
 
 export { prisma, connectDB };
-export {QueryEvent}
